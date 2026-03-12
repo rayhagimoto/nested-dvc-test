@@ -5,8 +5,8 @@ stages:
     deps:
     - path: src/train.py
       hash: md5
-      md5: 3d2da8df3f07fc9a4e0f748465c294e7
-      size: 2110
+      md5: c8de29aff6479f80f3f76276872f2639
+      size: 2055
     params:
       params.yaml:
         random_state: 42
@@ -27,8 +27,3 @@ stages:
       hash: md5
       md5: 74a3d0dc7c526980cc373696ab4382bc
       size: 115
-    - path: results/train
-      hash: md5
-      md5: d751713988987e9331980363e24189ce.dir
-      size: 0
-      nfiles: 0

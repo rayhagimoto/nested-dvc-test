@@ -7,7 +7,6 @@ stages:
     - data/X.csv
     - data/y.csv
     - results/model/model.pkl
-    - results/train
     - results/report.md:
         cache: false
     params:
