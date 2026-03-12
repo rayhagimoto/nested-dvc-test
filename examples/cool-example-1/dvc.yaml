@@ -19,5 +19,3 @@ artifacts:
     path: results/model/model.pkl
     type: model
     desc: OLS Regression trained on Iris Dataset.
-params:
-- results/params.yaml

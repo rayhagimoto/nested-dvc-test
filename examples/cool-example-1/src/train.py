@@ -34,6 +34,7 @@ def main():
     
     # Load params
     params = get_params()
+    print(params)
     print("random_state = ", params["random_state"])
     random_state = int(params["random_state"])
 
@@ -66,7 +67,7 @@ def main():
     mse_test = mean_squared_error(y_test, y_pred)
 
     with Live(dir="results", report="md") as live:
-        live.log_param("report", params)
+        # live.log_param("random_state", random_state)
         live.log_metric("train/mse", mse_train, plot=False)
         live.log_metric("test/mse", mse_test, plot=False)
         live.log_artifact(f"{model_dir}/model.pkl", type="model", name="ols-iris", desc="OLS Regression trained on Iris Dataset.")
@@ -75,6 +76,5 @@ def main():
 
 if __name__ == '__main__':
     main()
-
 
 
