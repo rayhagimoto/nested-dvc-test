@@ -1,0 +1,9 @@
+[project]
+name = "cool-example-1"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "dvclive>=3.49.0",
+    "pandas>=3.0.1",
+    "scikit-learn>=1.8.0",
+]

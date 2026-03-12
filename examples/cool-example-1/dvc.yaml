@@ -1,0 +1,19 @@
+stages:
+  train:
+    cmd: uv run src/train.py
+    deps:
+    - src/train.py
+    outs:
+    - data/X.csv
+    - data/y.csv
+    - results/model/model.pkl
+    - results/train
+    params:
+    - random_state
+metrics:
+- results/metrics.json
+artifacts:
+  ols-iris:
+    path: results/model/model.pkl
+    type: model
+    desc: OLS Regression trained on Iris Dataset.
