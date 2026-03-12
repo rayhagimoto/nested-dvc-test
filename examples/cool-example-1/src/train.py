@@ -33,6 +33,7 @@ def main():
     # Load params
     params = get_params()
     print("random_state = ", params["random_state"])
+    random_state = int(params["random_state"])
 
     # Set up directories
     _ensure_directory("results/model")
@@ -43,7 +44,7 @@ def main():
     # Get the data
     X, y = prepare_data()
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, random_state=params["random_state"])
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, random_state=random_state)
 
     # Train an OLS regression model
     model = LinearRegression()
