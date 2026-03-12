@@ -5,8 +5,11 @@ stages:
     deps:
     - path: src/train.py
       hash: md5
-      md5: c7c441c7427b5d5343ab88cceb1ae3f5
-      size: 1823
+      md5: 9119c45d97fbcfa729c7904e3ece8789
+      size: 1933
+    params:
+      params.yaml:
+        random_state: 42
     outs:
     - path: data/X.csv
       hash: md5
