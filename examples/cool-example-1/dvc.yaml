@@ -10,6 +10,8 @@ stages:
     - results/train
     params:
     - random_state
+params:
+- results/params.yaml
 metrics:
 - results/metrics.json
 artifacts:

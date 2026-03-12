@@ -1,0 +1,6 @@
+report:
+  random_state: 42
+  report:
+    random_state: 42
+    report:
+      random_state: 42
