@@ -8,10 +8,9 @@ stages:
     - data/y.csv
     - results/model/model.pkl
     - results/train
+    - results/report.md
     params:
     - random_state
-params:
-- results/params.yaml
 metrics:
 - results/metrics.json
 artifacts:
@@ -19,3 +18,5 @@ artifacts:
     path: results/model/model.pkl
     type: model
     desc: OLS Regression trained on Iris Dataset.
+params:
+- results/params.yaml
