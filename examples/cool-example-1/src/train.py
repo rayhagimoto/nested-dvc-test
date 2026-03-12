@@ -67,6 +67,7 @@ def main():
         live.log_metric("train/mse", mse_train, plot=False)
         live.log_metric("test/mse", mse_test, plot=False)
         live.log_artifact(f"{model_dir}/model.pkl", type="model", name="ols-iris", desc="OLS Regression trained on Iris Dataset.")
+        live.make_report()
 
 if __name__ == '__main__':
     main()
