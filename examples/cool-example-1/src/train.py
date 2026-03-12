@@ -41,8 +41,6 @@ def main():
     # Set up directories
     _ensure_directory("results/model")
     _ensure_directory("data")
-    _ensure_directory("results/train")
-    _ensure_directory("results/test")
 
     # Get the data
     X, y = prepare_data()
