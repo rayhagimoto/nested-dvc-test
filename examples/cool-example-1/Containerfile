@@ -13,9 +13,8 @@ WORKDIR /nested-dvc-test
 RUN git clone https://github.com/rayhagimoto/nested-dvc-test .
 RUN git checkout dvc_exp/cool-example-1-seed-sweep
 WORKDIR /nested-dvc-test/examples/cool-example-1
-RUN uv sync
-RUN uv run dvc exp pull origin
-
-
+RUN uv venv --python 3.14
+RUN uv pip install dvc
+# RUN source .venv/bin/activate && dvc exp pull origin
 
 CMD ["bash"]
