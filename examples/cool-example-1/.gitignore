@@ -1,3 +1,7 @@
 .venv/
 /model.pkl
 /eval
+uv.lock
+__marimo__/
+*.ipynb
+
