@@ -1,135 +1,135 @@
-name: Render Notebooks
-
-on:
-  push:
-    paths:
-      - "**/notebooks/*.py"
-      - "scripts/render_interactive_notebook.sh"
-      - "**/nbconvert_config.py"
-      - "**/pyproject.toml"
-      - ".github/workflows/render_notebooks.yml"
-
-permissions:
-  contents: write
-
-jobs:
-  render:
-    if: github.actor != 'github-actions[bot]'
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/astral-sh/uv:python3.14-bookworm-slim
-
-    steps:
-      - name: Install git
-        run: |
-          apt-get update
-          apt-get install -y git
-
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Mark workspace safe
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-
-      - name: Render marimo notebooks
-        shell: bash
-        run: |
-          set -u
-
-          find_project_root() {
-            local search_dir="$1"
-
-            while [ "$search_dir" != "." ] && [ "$search_dir" != "/" ]; do
-              if [ -f "$search_dir/pyproject.toml" ] && [ -f "$search_dir/nbconvert_config.py" ]; then
-                printf '%s\n' "$search_dir"
-                return 0
-              fi
-
-              search_dir="$(dirname "$search_dir")"
-            done
-
-            if [ -f "./pyproject.toml" ] && [ -f "./nbconvert_config.py" ]; then
-              printf '.\n'
-              return 0
-            fi
-
-            return 1
-          }
-
-          declare -A prepared_projects=()
-          declare -A failed_projects=()
-          rendered_count=0
-          skipped_count=0
-
-          while IFS= read -r -d '' notebook_path; do
-            if ! grep -q '@app.cell' "$notebook_path"; then
-              continue
-            fi
-
-            if ! project_root="$(find_project_root "$(dirname "$notebook_path")")"; then
-              echo "Skipping $notebook_path: could not locate project root with pyproject.toml and nbconvert_config.py"
-              skipped_count=$((skipped_count + 1))
-              continue
-            fi
-
-            render_script="./scripts/render_interactive_notebook.sh"
-
-            if [ -z "${prepared_projects["$project_root"]+x}" ] && [ -z "${failed_projects["$project_root"]+x}" ]; then
-              if [ -f "$project_root/pyproject.toml" ]; then
-                if (cd "$project_root" && uv sync); then
-                  prepared_projects["$project_root"]=1
-                else
-                  echo "Skipping project $project_root: dependency installation failed"
-                  failed_projects["$project_root"]=1
-                fi
-              else
-                echo "Skipping project $project_root: missing pyproject.toml"
-                failed_projects["$project_root"]=1
-              fi
-            fi
-
-            if [ -n "${failed_projects["$project_root"]+x}" ]; then
-              skipped_count=$((skipped_count + 1))
-              continue
-            fi
-
-            echo "Rendering $notebook_path"
-            if bash "$render_script" "$notebook_path"; then
-              rendered_count=$((rendered_count + 1))
-            else
-              skipped_count=$((skipped_count + 1))
-            fi
-          done < <(find . -path '*/notebooks/*.py' -print0 | sort -z)
-
-          find . -path '*/notebooks/*.ipynb' -type f -delete
-
-          echo "Rendered notebooks: $rendered_count"
-          echo "Skipped notebooks: $skipped_count"
-
-      - name: Commit rendered markdown and figures
-        shell: bash
-        run: |
-          mapfile -d '' artifact_paths < <(
-            find . \
-              \( -path '*/notebooks/*.md' -o -path '*/notebooks/figs/*' \) \
-              -print0
-          )
-
-          if [ "${#artifact_paths[@]}" -eq 0 ]; then
-            echo "No rendered notebook artifacts found."
-            exit 0
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add -A "${artifact_paths[@]}"
-
-          if git diff --cached --quiet; then
-            echo "No rendered notebook changes."
-            exit 0
-          fi
-
-          git commit -m "Render notebooks"
-          git push
+# name: Render Notebooks
+# 
+# on:
+#   push:
+#     paths:
+#       - "**/notebooks/*.py"
+#       - "scripts/render_interactive_notebook.sh"
+#       - "**/nbconvert_config.py"
+#       - "**/pyproject.toml"
+#       - ".github/workflows/render_notebooks.yml"
+# 
+# permissions:
+#   contents: write
+# 
+# jobs:
+#   render:
+#     if: github.actor != 'github-actions[bot]'
+#     runs-on: ubuntu-latest
+#     container:
+#       image: ghcr.io/astral-sh/uv:python3.14-bookworm-slim
+# 
+#     steps:
+#       - name: Install git
+#         run: |
+#           apt-get update
+#           apt-get install -y git
+# 
+#       - uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0
+# 
+#       - name: Mark workspace safe
+#         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+# 
+#       - name: Render marimo notebooks
+#         shell: bash
+#         run: |
+#           set -u
+# 
+#           find_project_root() {
+#             local search_dir="$1"
+# 
+#             while [ "$search_dir" != "." ] && [ "$search_dir" != "/" ]; do
+#               if [ -f "$search_dir/pyproject.toml" ] && [ -f "$search_dir/nbconvert_config.py" ]; then
+#                 printf '%s\n' "$search_dir"
+#                 return 0
+#               fi
+# 
+#               search_dir="$(dirname "$search_dir")"
+#             done
+# 
+#             if [ -f "./pyproject.toml" ] && [ -f "./nbconvert_config.py" ]; then
+#               printf '.\n'
+#               return 0
+#             fi
+# 
+#             return 1
+#           }
+# 
+#           declare -A prepared_projects=()
+#           declare -A failed_projects=()
+#           rendered_count=0
+#           skipped_count=0
+# 
+#           while IFS= read -r -d '' notebook_path; do
+#             if ! grep -q '@app.cell' "$notebook_path"; then
+#               continue
+#             fi
+# 
+#             if ! project_root="$(find_project_root "$(dirname "$notebook_path")")"; then
+#               echo "Skipping $notebook_path: could not locate project root with pyproject.toml and nbconvert_config.py"
+#               skipped_count=$((skipped_count + 1))
+#               continue
+#             fi
+# 
+#             render_script="./scripts/render_interactive_notebook.sh"
+# 
+#             if [ -z "${prepared_projects["$project_root"]+x}" ] && [ -z "${failed_projects["$project_root"]+x}" ]; then
+#               if [ -f "$project_root/pyproject.toml" ]; then
+#                 if (cd "$project_root" && uv sync); then
+#                   prepared_projects["$project_root"]=1
+#                 else
+#                   echo "Skipping project $project_root: dependency installation failed"
+#                   failed_projects["$project_root"]=1
+#                 fi
+#               else
+#                 echo "Skipping project $project_root: missing pyproject.toml"
+#                 failed_projects["$project_root"]=1
+#               fi
+#             fi
+# 
+#             if [ -n "${failed_projects["$project_root"]+x}" ]; then
+#               skipped_count=$((skipped_count + 1))
+#               continue
+#             fi
+# 
+#             echo "Rendering $notebook_path"
+#             if bash "$render_script" "$notebook_path"; then
+#               rendered_count=$((rendered_count + 1))
+#             else
+#               skipped_count=$((skipped_count + 1))
+#             fi
+#           done < <(find . -path '*/notebooks/*.py' -print0 | sort -z)
+# 
+#           find . -path '*/notebooks/*.ipynb' -type f -delete
+# 
+#           echo "Rendered notebooks: $rendered_count"
+#           echo "Skipped notebooks: $skipped_count"
+# 
+#       - name: Commit rendered markdown and figures
+#         shell: bash
+#         run: |
+#           mapfile -d '' artifact_paths < <(
+#             find . \
+#               \( -path '*/notebooks/*.md' -o -path '*/notebooks/figs/*' \) \
+#               -print0
+#           )
+# 
+#           if [ "${#artifact_paths[@]}" -eq 0 ]; then
+#             echo "No rendered notebook artifacts found."
+#             exit 0
+#           fi
+# 
+#           git config user.name "github-actions[bot]"
+#           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+# 
+#           git add -A "${artifact_paths[@]}"
+# 
+#           if git diff --cached --quiet; then
+#             echo "No rendered notebook changes."
+#             exit 0
+#           fi
+# 
+#           git commit -m "Render notebooks"
+#           git push
