@@ -52,7 +52,7 @@ _exps_df
 
 
 ```python
-exps_df = exp_show(hide_baseline=True, revs=["tagged-experiment"])
+exps_df = exp_show(hide_baseline=True)
 ```
 
 
