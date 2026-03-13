@@ -1,13 +1,3 @@
-# /// script
-# requires-python = ">=3.14"
-# dependencies = [
-#     "altair==6.0.0",
-#     "dvc==3.66.1",
-#     "marimo>=0.20.4",
-#     "matplotlib==3.10.8",
-#     "polars==1.39.0",
-# ]
-# ///
 import marimo
 
 __generated_with = "0.20.4"
@@ -17,22 +7,12 @@ app = marimo.App(width="medium", auto_download=["ipynb", "html"])
 @app.cell
 def _():
     import marimo as mo
-
-    return
-
-
-@app.cell
-def _():
     import altair as alt
+    import matplotlib.pyplot as plt
+    import polars as pl
+    import dvc.api
 
     return
-
-
-@app.cell
-def _():
-    import matplotlib.pyplot as plt
-
-    return (plt,)
 
 
 @app.function
@@ -42,8 +22,6 @@ def exp_show(
     return_type: "dict" | "df" = "df",
     **dvc_kwargs,
 ):
-    import polars as pl
-    import dvc.api
 
     exps_dict = dvc.api.exp_show(**dvc_kwargs)
     df = pl.DataFrame(exps_dict)
