@@ -1,90 +1,49 @@
-# Experiment Isolation Test
+# Experiment Visibility Test
 
-I ran the following commands to create two independent DVC example repositories:
+I ran the following commands to create two DVC example directories:
 
+```bash
+./setup-example.sh 1
+./setup-example.sh 2
 ```
-$ ./setup-example.sh 1 && ./setup-example.sh 2
+
+This script clones the same example project into two sibling directories, removes the cloned `.git/` and `.dvc/` metadata, initializes DVC in subdir mode, pulls data, and runs a named experiment:
+
+```bash
+dvc init --subdir
+dvc exp run -n "exp-<suffix>"
 ```
 
-This script clones the example repo, initializes a DVC repository in subdir mode, pulls the data, commits the workspace, and runs a DVC experiment named according to the provided argument.
+The resulting directories are:
 
-The result is two directories:
-
-```
+```text
 cool-example-1
 cool-example-2
 ```
 
-I then checked whether experiments created in one repository were visible in the other.
+## Important detail
 
----
+These are not isolated Git repositories. Both directories live under the same parent Git repository, whose `.git/` directory is at the project root:
 
-# Repository 1
-
-Command:
-
-```
-$ cd cool-example-1
-$ dvc exp show
+```text
+../.git
 ```
 
-Output:
+Because DVC experiments are tied to Git state, experiments created from the same commit are visible from either subdirectory when they share that same Git root.
 
-```
-> ────────────────────────────────────────────────────────────────────────────────>
->  Experiment            Created    avg_prec.train   avg_prec.test   roc_auc.train>
-> ────────────────────────────────────────────────────────────────────────────────>
->  workspace             -                 0.97437           0.925         0.98667>
->  main                  07:06 PM          0.97437           0.925         0.98667>
->  └── 52e7519 [exp-1]   07:06 PM          0.97437           0.925         0.98667>
-> ────────────────────────────────────────────────────────────────────────────────>
-```
+## What happens in practice
 
-Observed experiment:
+If `exp-1` is run from `cool-example-1` and `exp-2` is run from `cool-example-2`, then `dvc exp show` from either directory shows both experiments, not just the one created in that directory.
 
-```
-exp-1
-```
+## Result
 
----
+The experiments are **not isolated** across `cool-example-1` and `cool-example-2`.
 
-# Repository 2
+| Directory        | Visible Experiments |
+| ---------------- | ------------------- |
+| `cool-example-1` | `exp-1`, `exp-2`    |
+| `cool-example-2` | `exp-1`, `exp-2`    |
 
-Command:
+## Conclusion
 
-```
-$ cd ../cool-example-2
-$ dvc exp show
-```
-
-Output:
-
-```
-> ────────────────────────────────────────────────────────────────────────────────>
->  Experiment            Created    avg_prec.train   avg_prec.test   roc_auc.train>
-> ────────────────────────────────────────────────────────────────────────────────>
->  workspace             -                 0.97437           0.925         0.98667>
->  main                  07:06 PM          0.97437           0.925         0.98667>
->  └── 1b68f84 [exp-2]   07:06 PM          0.97437           0.925         0.98667>
-> ────────────────────────────────────────────────────────────────────────────────>
-```
-
-Observed experiment:
-
-```
-exp-2
-```
-
----
-
-# Result
-
-Each repository only shows the experiment that was executed within that repository:
-
-| Repository       | Visible Experiment |
-| ---------------- | ------------------ |
-| `cool-example-1` | `exp-1`            |
-| `cool-example-2` | `exp-2`            |
-
-The experiment from one repository is **not visible in the other**, confirming that experiments are isolated between the two independent DVC repositories.
-
+Running `dvc init --subdir` in sibling directories does not create experiment isolation when those directories still share the same parent `.git/` repository. The visibility is shared at the Git repository level, so experiments run from the same commit appear from either subdirectory.
