@@ -7,7 +7,6 @@ on:
       - "**/scripts/render_interactive_notebook.sh"
       - "**/nbconvert_config.py"
       - "**/pyproject.toml"
-      - "**/uv.lock"
       - ".github/workflows/render_notebooks.yml"
 
 permissions:
@@ -15,6 +14,7 @@ permissions:
 
 jobs:
   render:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/astral-sh/uv:python3.14-bookworm-slim
@@ -65,7 +65,7 @@ jobs:
 
             if [ -z "${prepared_projects["$project_root"]+x}" ] && [ -z "${failed_projects["$project_root"]+x}" ]; then
               if [ -f "$project_root/pyproject.toml" ]; then
-                if (cd "$project_root" && uv sync --frozen); then
+                if (cd "$project_root" && uv sync); then
                   prepared_projects["$project_root"]=1
                 else
                   echo "Skipping project $project_root: dependency installation failed"
@@ -98,10 +98,21 @@ jobs:
       - name: Commit rendered markdown and figures
         shell: bash
         run: |
+          mapfile -d '' artifact_paths < <(
+            find . \
+              \( -path '*/notebooks/*.md' -o -path '*/notebooks/figs/*' \) \
+              -print0
+          )
+
+          if [ "${#artifact_paths[@]}" -eq 0 ]; then
+            echo "No rendered notebook artifacts found."
+            exit 0
+          fi
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add -A ':(glob)**/notebooks/*.md' ':(glob)**/notebooks/figs/**'
+          git add -A "${artifact_paths[@]}"
 
           if git diff --cached --quiet; then
             echo "No rendered notebook changes."
