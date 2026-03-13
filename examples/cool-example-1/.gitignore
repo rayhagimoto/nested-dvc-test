@@ -1,6 +1,5 @@
 .venv/
 /model.pkl
-/eval
 uv.lock
 __marimo__/
 
