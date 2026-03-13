@@ -1,0 +1,93 @@
+{
+  "version": "1",
+  "metadata": {
+    "marimo_version": "0.20.4",
+    "script_metadata_hash": null
+  },
+  "cells": [
+    {
+      "id": "Hbol",
+      "code_hash": "1d0db38904205bec4d6f6f6a1f6cec3e",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "muFN",
+      "code_hash": "a7bb646f9fceb375eb45a1a6c9089ee4",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "kNaA",
+      "code_hash": "48f9ce6933b2bd65fba06745776b6bb9",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "sqlY",
+      "code_hash": "a8a08309bca21308952cdcc6752dc956",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "otOI",
+      "code_hash": "27384e0bd75d2e690c790a7121bee33d",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='otOI-0' random-id='a3fcc0f3-adfd-7421-ae8e-35f8f7ed874f'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;[{&#92;&quot;Experiment&#92;&quot;:&#92;&quot;seed-sweep-1&#92;&quot;,&#92;&quot;rev&#92;&quot;:&#92;&quot;a779b50&#92;&quot;,&#92;&quot;typ&#92;&quot;:&#92;&quot;branch_commit&#92;&quot;,&#92;&quot;Created&#92;&quot;:&#92;&quot;11:11 AM&#92;&quot;,&#92;&quot;parent&#92;&quot;:null,&#92;&quot;State&#92;&quot;:null,&#92;&quot;Executor&#92;&quot;:null,&#92;&quot;avg_prec.train&#92;&quot;:0.9738378098214749,&#92;&quot;avg_prec.test&#92;&quot;:0.9232019522934619,&#92;&quot;roc_auc.train&#92;&quot;:0.986433082848524,&#92;&quot;roc_auc.test&#92;&quot;:0.9444760661606162,&#92;&quot;prepare.split&#92;&quot;:0.2,&#92;&quot;prepare.seed&#92;&quot;:20170428.0,&#92;&quot;featurize.max_features&#92;&quot;:200.0,&#92;&quot;featurize.ngrams&#92;&quot;:2.0,&#92;&quot;train.seed&#92;&quot;:1.0,&#92;&quot;train.n_est&#92;&quot;:50.0,&#92;&quot;train.min_split&#92;&quot;:0.01,&#92;&quot;data/data.xml&#92;&quot;:&#92;&quot;22a1a2931c8370d3aeedd7183606fd7f&#92;&quot;,&#92;&quot;data/features&#92;&quot;:&#92;&quot;f35d4cc2c552ac959ae602162b8543f3.dir&#92;&quot;,&#92;&quot;data/prepared&#92;&quot;:&#92;&quot;153aad06d376b6595932470e459ef42a.dir&#92;&quot;,&#92;&quot;model.pkl&#92;&quot;:&#92;&quot;166bd3dca839d6f2f5e1baca152e6d57&#92;&quot;,&#92;&quot;src/evaluate.py&#92;&quot;:&#92;&quot;a1a59f55636170fb56e0c6afd3e28fa4&#92;&quot;,&#92;&quot;src/featurization.py&#92;&quot;:&#92;&quot;e22789fc9581cad11ef7a6fa3aa3f17b&#92;&quot;,&#92;&quot;src/prepare.py&#92;&quot;:&#92;&quot;f54d670ac8a4f63206781fc31d1f2651&#92;&quot;,&#92;&quot;src/train.py&#92;&quot;:&#92;&quot;324001573ed724e5ae092226fcf9ca30&#92;&quot;},{&#92;&quot;Experiment&#92;&quot;:&#92;&quot;seed-sweep-2&#92;&quot;,&#92;&quot;rev&#92;&quot;:&#92;&quot;1eb6956&#92;&quot;,&#92;&quot;typ&#92;&quot;:&#92;&quot;branch_base&#92;&quot;,&#92;&quot;Created&#92;&quot;:&#92;&quot;11:11 AM&#92;&quot;,&#92;&quot;parent&#92;&quot;:null,&#92;&quot;State&#92;&quot;:null,&#92;&quot;Executor&#92;&quot;:null,&#92;&quot;avg_prec.train&#92;&quot;:0.974357028276638,&#92;&quot;avg_prec.test&#92;&quot;:0.9273901177183237,&#92;&quot;roc_auc.train&#92;&quot;:0.9866175423160719,&#92;&quot;roc_auc.test&#92;&quot;:0.9477567387100813,&#92;&quot;prepare.split&#92;&quot;:0.2,&#92;&quot;prepare.seed&#92;&quot;:20170428.0,&#92;&quot;featurize.max_features&#92;&quot;:200.0,&#92;&quot;featurize.ngrams&#92;&quot;:2.0,&#92;&quot;train.seed&#92;&quot;:2.0,&#92;&quot;train.n_est&#92;&quot;:50.0,&#92;&quot;train.min_split&#92;&quot;:0.01,&#92;&quot;data/data.xml&#92;&quot;:&#92;&quot;22a1a2931c8370d3aeedd7183606fd7f&#92;&quot;,&#92;&quot;data/features&#92;&quot;:&#92;&quot;f35d4cc2c552ac959ae602162b8543f3.dir&#92;&quot;,&#92;&quot;data/prepared&#92;&quot;:&#92;&quot;153aad06d376b6595932470e459ef42a.dir&#92;&quot;,&#92;&quot;model.pkl&#92;&quot;:&#92;&quot;5aeede18ac1b624af04636a274dd607c&#92;&quot;,&#92;&quot;src/evaluate.py&#92;&quot;:&#92;&quot;a1a59f55636170fb56e0c6afd3e28fa4&#92;&quot;,&#92;&quot;src/featurization.py&#92;&quot;:&#92;&quot;e22789fc9581cad11ef7a6fa3aa3f17b&#92;&quot;,&#92;&quot;src/prepare.py&#92;&quot;:&#92;&quot;f54d670ac8a4f63206781fc31d1f2651&#92;&quot;,&#92;&quot;src/train.py&#92;&quot;:&#92;&quot;324001573ed724e5ae092226fcf9ca30&#92;&quot;}]&quot;' data-total-rows='2' data-total-columns='26' data-max-columns='50' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;Experiment&quot;,[&quot;string&quot;,&quot;str&quot;]],[&quot;rev&quot;,[&quot;string&quot;,&quot;str&quot;]],[&quot;typ&quot;,[&quot;string&quot;,&quot;str&quot;]],[&quot;Created&quot;,[&quot;string&quot;,&quot;str&quot;]],[&quot;parent&quot;,[&quot;unknown&quot;,&quot;null&quot;]],[&quot;State&quot;,[&quot;unknown&quot;,&quot;null&quot;]],[&quot;Executor&quot;,[&quot;unknown&quot;,&quot;null&quot;]],[&quot;avg_prec.train&quot;,[&quot;number&quot;,&quot;f64&quot;]],[&quot;avg_prec.test&quot;,[&quot;number&quot;,&quot;f64&quot;]],[&quot;roc_auc.train&quot;,[&quot;number&quot;,&quot;f64&quot;]],[&quot;roc_auc.test&quot;,[&quot;number&quot;,&quot;f64&quot;]],[&quot;prepare.split&quot;,[&quot;number&quot;,&quot;f64&quot;]],[&quot;prepare.seed&quot;,[&quot;number&quot;,&quot;f64&quot;]],[&quot;featurize.max_features&quot;,[&quot;number&quot;,&quot;f64&quot;]],[&quot;featurize.ngrams&quot;,[&quot;number&quot;,&quot;f64&quot;]],[&quot;train.seed&quot;,[&quot;number&quot;,&quot;f64&quot;]],[&quot;train.n_est&quot;,[&quot;number&quot;,&quot;f64&quot;]],[&quot;train.min_split&quot;,[&quot;number&quot;,&quot;f64&quot;]],[&quot;data/data.xml&quot;,[&quot;string&quot;,&quot;str&quot;]],[&quot;data/features&quot;,[&quot;string&quot;,&quot;str&quot;]],[&quot;data/prepared&quot;,[&quot;string&quot;,&quot;str&quot;]],[&quot;model.pkl&quot;,[&quot;string&quot;,&quot;str&quot;]],[&quot;src/evaluate.py&quot;,[&quot;string&quot;,&quot;str&quot;]],[&quot;src/featurization.py&quot;,[&quot;string&quot;,&quot;str&quot;]],[&quot;src/prepare.py&quot;,[&quot;string&quot;,&quot;str&quot;]],[&quot;src/train.py&quot;,[&quot;string&quot;,&quot;str&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='false' data-show-data-types='true' data-show-page-size-selector='false' data-show-column-explorer='true' data-show-chart-builder='true' data-row-headers='[]' data-has-stable-row-id='false' data-lazy='false' data-preload='false' data-download-file-name='&quot;df&quot;'></marimo-table></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "KVUH",
+      "code_hash": "cba2215a5ec87a6a0571b696f7739ba2",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "NFzA",
+      "code_hash": null,
+      "outputs": [],
+      "console": []
+    }
+  ]
+}
