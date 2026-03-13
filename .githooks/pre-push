@@ -9,8 +9,9 @@ cd "$repo_root"
 echo "Rendering notebooks before push"
 RENDER_NOTEBOOKS_STRICT=1 bash scripts/render_interactive_notebook.sh
 
-if ! git diff --quiet -- '*/notebooks/*.md' '*/notebooks/figs/*'; then
-  echo "Rendered notebook artifacts changed. Review and commit them before pushing."
-  git status --short -- '*/notebooks/*.md' '*/notebooks/figs/*'
-  exit 1
+git add -A -- ':(glob)**/notebooks/*.md' ':(glob)**/notebooks/figs/**'
+
+if ! git diff --cached --quiet -- ':(glob)**/notebooks/*.md' ':(glob)**/notebooks/figs/**'; then
+  echo "Committing rendered notebook artifacts"
+  git commit -m "Render notebooks"
 fi
