@@ -42,7 +42,8 @@ stages:
     - train.n_est
     - train.seed
     outs:
-    - model.pkl
+    - model.pkl:
+        cache: false
   evaluate:
     cmd: python src/evaluate.py model.pkl data/features
     deps:
@@ -50,7 +51,8 @@ stages:
     - model.pkl
     - src/evaluate.py
     outs:
-    - eval
+    - eval:
+        cache: false
 metrics:
 - eval/metrics.json
 plots:
