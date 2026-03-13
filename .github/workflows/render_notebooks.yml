@@ -1,0 +1,112 @@
+name: Render Notebooks
+
+on:
+  push:
+    paths:
+      - "**/notebooks/*.py"
+      - "**/scripts/render_interactive_notebook.sh"
+      - "**/nbconvert_config.py"
+      - "**/pyproject.toml"
+      - "**/uv.lock"
+      - ".github/workflows/render_notebooks.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/astral-sh/uv:python3.14-bookworm-slim
+
+    steps:
+      - name: Install git
+        run: |
+          apt-get update
+          apt-get install -y git
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Mark workspace safe
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Render marimo notebooks
+        shell: bash
+        run: |
+          set -u
+
+          declare -A prepared_projects=()
+          declare -A failed_projects=()
+          rendered_count=0
+          skipped_count=0
+
+          while IFS= read -r -d '' notebook_path; do
+            if ! grep -q '@app.cell' "$notebook_path"; then
+              continue
+            fi
+
+            project_root="$(dirname "$(dirname "$notebook_path")")"
+            render_script="$project_root/scripts/render_interactive_notebook.sh"
+            relative_notebook="${notebook_path#"$project_root"/}"
+
+            if [ ! -f "$render_script" ]; then
+              echo "Skipping $notebook_path: missing $render_script"
+              skipped_count=$((skipped_count + 1))
+              continue
+            fi
+
+            if [ ! -f "$project_root/nbconvert_config.py" ]; then
+              echo "Skipping $notebook_path: missing $project_root/nbconvert_config.py"
+              skipped_count=$((skipped_count + 1))
+              continue
+            fi
+
+            if [ -z "${prepared_projects["$project_root"]+x}" ] && [ -z "${failed_projects["$project_root"]+x}" ]; then
+              if [ -f "$project_root/pyproject.toml" ]; then
+                if (cd "$project_root" && uv sync --frozen); then
+                  prepared_projects["$project_root"]=1
+                else
+                  echo "Skipping project $project_root: dependency installation failed"
+                  failed_projects["$project_root"]=1
+                fi
+              else
+                echo "Skipping project $project_root: missing pyproject.toml"
+                failed_projects["$project_root"]=1
+              fi
+            fi
+
+            if [ -n "${failed_projects["$project_root"]+x}" ]; then
+              skipped_count=$((skipped_count + 1))
+              continue
+            fi
+
+            echo "Rendering $notebook_path"
+            if (cd "$project_root" && bash scripts/render_interactive_notebook.sh "$relative_notebook"); then
+              rendered_count=$((rendered_count + 1))
+            else
+              skipped_count=$((skipped_count + 1))
+            fi
+          done < <(find . -path '*/notebooks/*.py' -print0 | sort -z)
+
+          find . -path '*/notebooks/*.ipynb' -type f -delete
+
+          echo "Rendered notebooks: $rendered_count"
+          echo "Skipped notebooks: $skipped_count"
+
+      - name: Commit rendered markdown and figures
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A ':(glob)**/notebooks/*.md' ':(glob)**/notebooks/figs/**'
+
+          if git diff --cached --quiet; then
+            echo "No rendered notebook changes."
+            exit 0
+          fi
+
+          git commit -m "Render notebooks"
+          git push
