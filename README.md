@@ -35,3 +35,5 @@ So I want to know if I should put `.dvc/` folders inside of the `cool-examples` 
 
 One workflow that I desire is the ability to do `dvc repro examples/cool-example-i/dvc.yaml` to reproduce results locally.
 ```
+
+To enable local notebook rendering on `git push`, run `bash scripts/install-git-hooks.sh` once in your clone. That configures the repo-managed pre-push hook in [`.githooks/pre-push`](/home/ray/code/explore/nested-dvc-test/.githooks/pre-push), which runs [`scripts/render_interactive_notebook.sh`](/home/ray/code/explore/nested-dvc-test/scripts/render_interactive_notebook.sh) before each push and blocks the push if rendered notebook artifacts changed.

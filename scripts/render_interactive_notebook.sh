@@ -5,23 +5,24 @@ set -u
 strict_mode="${RENDER_NOTEBOOKS_STRICT:-0}"
 
 find_project_root() {
-  local search_dir="$1"
+  local notebook_path="$1"
+  local notebook_dir
+  local project_root
 
-  while [ "$search_dir" != "." ] && [ "$search_dir" != "/" ]; do
-    if [ -f "$search_dir/pyproject.toml" ] && [ -f "$search_dir/nbconvert_config.py" ]; then
-      printf '%s\n' "$search_dir"
-      return 0
-    fi
+  notebook_dir="$(dirname "$notebook_path")"
+  project_root="$(dirname "$notebook_dir")"
 
-    search_dir="$(dirname "$search_dir")"
-  done
-
-  if [ -f "./pyproject.toml" ] && [ -f "./nbconvert_config.py" ]; then
-    printf '.\n'
-    return 0
+  if [ ! -f "$project_root/pyproject.toml" ]; then
+    echo "Skipping ${notebook_path}: missing $project_root/pyproject.toml"
+    return 1
   fi
 
-  return 1
+  if [ ! -f "$project_root/nbconvert_config.py" ]; then
+    echo "Skipping ${notebook_path}: missing $project_root/nbconvert_config.py"
+    return 1
+  fi
+
+  printf '%s\n' "$project_root"
 }
 
 render_notebook() {
@@ -37,8 +38,7 @@ render_notebook() {
   local temp_ipynb
   local render_log
 
-  if ! project_root="$(find_project_root "$(dirname "$notebook_path")")"; then
-    echo "Skipping ${notebook_path}: could not locate project root with pyproject.toml and nbconvert_config.py"
+  if ! project_root="$(find_project_root "$notebook_path")"; then
     return 1
   fi
 
