@@ -42,7 +42,7 @@ def exp_show(
 @app.cell
 def _():
     _exps_df = exp_show(
-        hide_baseline=True, revs=["dvc_exp/cool-example-1/seed-sweep"]
+        hide_baseline=True, revs=["tagged-experiment"]
     )
     _exps_df
     return
