@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - "**/notebooks/*.py"
-      - "**/scripts/render_interactive_notebook.sh"
+      - "scripts/render_interactive_notebook.sh"
       - "**/nbconvert_config.py"
       - "**/pyproject.toml"
       - ".github/workflows/render_notebooks.yml"
@@ -37,6 +37,26 @@ jobs:
         run: |
           set -u
 
+          find_project_root() {
+            local search_dir="$1"
+
+            while [ "$search_dir" != "." ] && [ "$search_dir" != "/" ]; do
+              if [ -f "$search_dir/pyproject.toml" ] && [ -f "$search_dir/nbconvert_config.py" ]; then
+                printf '%s\n' "$search_dir"
+                return 0
+              fi
+
+              search_dir="$(dirname "$search_dir")"
+            done
+
+            if [ -f "./pyproject.toml" ] && [ -f "./nbconvert_config.py" ]; then
+              printf '.\n'
+              return 0
+            fi
+
+            return 1
+          }
+
           declare -A prepared_projects=()
           declare -A failed_projects=()
           rendered_count=0
@@ -47,21 +67,13 @@ jobs:
               continue
             fi
 
-            project_root="$(dirname "$(dirname "$notebook_path")")"
-            render_script="$project_root/scripts/render_interactive_notebook.sh"
-            relative_notebook="${notebook_path#"$project_root"/}"
-
-            if [ ! -f "$render_script" ]; then
-              echo "Skipping $notebook_path: missing $render_script"
+            if ! project_root="$(find_project_root "$(dirname "$notebook_path")")"; then
+              echo "Skipping $notebook_path: could not locate project root with pyproject.toml and nbconvert_config.py"
               skipped_count=$((skipped_count + 1))
               continue
             fi
 
-            if [ ! -f "$project_root/nbconvert_config.py" ]; then
-              echo "Skipping $notebook_path: missing $project_root/nbconvert_config.py"
-              skipped_count=$((skipped_count + 1))
-              continue
-            fi
+            render_script="./scripts/render_interactive_notebook.sh"
 
             if [ -z "${prepared_projects["$project_root"]+x}" ] && [ -z "${failed_projects["$project_root"]+x}" ]; then
               if [ -f "$project_root/pyproject.toml" ]; then
@@ -83,7 +95,7 @@ jobs:
             fi
 
             echo "Rendering $notebook_path"
-            if (cd "$project_root" && bash scripts/render_interactive_notebook.sh "$relative_notebook"); then
+            if bash "$render_script" "$notebook_path"; then
               rendered_count=$((rendered_count + 1))
             else
               skipped_count=$((skipped_count + 1))
