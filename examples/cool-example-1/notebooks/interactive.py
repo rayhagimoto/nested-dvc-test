@@ -50,7 +50,7 @@ def _():
 
 @app.cell
 def _():
-    exps_df = exp_show(hide_baseline=True)
+    exps_df = exp_show(hide_baseline=True, revs=["tagged-experiment"])
     return (exps_df,)
 
 
