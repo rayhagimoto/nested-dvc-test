@@ -2,6 +2,8 @@
 
 set -u
 
+strict_mode="${RENDER_NOTEBOOKS_STRICT:-0}"
+
 find_project_root() {
   local search_dir="$1"
 
@@ -28,6 +30,8 @@ render_notebook() {
   local notebook_dir
   local notebook_name
   local notebook_stem
+  local normalized_notebook_path
+  local normalized_project_root
   local relative_notebook_path
   local temp_dir
   local temp_ipynb
@@ -38,9 +42,14 @@ render_notebook() {
     return 1
   fi
 
-  relative_notebook_path="${notebook_path#./}"
-  if [ "$project_root" != "." ]; then
-    relative_notebook_path="${relative_notebook_path#"$project_root"/}"
+  normalized_notebook_path="${notebook_path#./}"
+  normalized_project_root="${project_root#./}"
+
+  relative_notebook_path="$normalized_notebook_path"
+  if [ "$normalized_project_root" != "." ] && [ "$normalized_project_root" != "$project_root" ]; then
+    relative_notebook_path="${normalized_notebook_path#"$normalized_project_root"/}"
+  elif [ "$project_root" != "." ]; then
+    relative_notebook_path="${normalized_notebook_path#"$project_root"/}"
   fi
 
   notebook_dir="$project_root/$(dirname "$relative_notebook_path")"
@@ -112,7 +121,12 @@ main() {
   done
 
   if [ "$failures" -gt 0 ]; then
-    echo "${failures} notebook render(s) failed. Continuing without failing the job."
+    echo "${failures} notebook render(s) failed."
+    if [ "$strict_mode" = "1" ]; then
+      return 1
+    fi
+
+    echo "Continuing without failing the job."
   fi
 
   return 0

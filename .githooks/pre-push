@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+
+cd "$repo_root"
+
+echo "Rendering notebooks before push"
+RENDER_NOTEBOOKS_STRICT=1 bash scripts/render_interactive_notebook.sh
+
+if ! git diff --quiet -- '*/notebooks/*.md' '*/notebooks/figs/*'; then
+  echo "Rendered notebook artifacts changed. Review and commit them before pushing."
+  git status --short -- '*/notebooks/*.md' '*/notebooks/figs/*'
+  exit 1
+fi
